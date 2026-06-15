@@ -22,9 +22,7 @@ export function getChangeBlockTops(): number[] {
   const host = getChangeHost();
   if (!scroller || !host?.shadowRoot) return [];
 
-  const changeEls = host.shadowRoot.querySelectorAll<HTMLElement>(
-    '[data-line-type^="change-"]',
-  );
+  const changeEls = host.shadowRoot.querySelectorAll<HTMLElement>('[data-line-type^="change-"]');
   if (changeEls.length === 0) return [];
 
   const scRect = scroller.getBoundingClientRect();
