@@ -62,3 +62,9 @@ xattr -dr com.apple.quarantine "/Applications/Diff Viewer.app"
   freeze, theme.
 - `src/platform/` — thin, mockable wrappers over Tauri (dialog, fs, drag-drop,
   store) plus the Shiki highlighter preload; all degrade gracefully in a browser.
+
+## License
+
+Copyright (c) 2026 Alex Powell. All Rights Reserved. This source is published for
+reference only and is **not** open-source — see [LICENSE](LICENSE). You may not
+use, copy, modify, or redistribute it without prior written permission.
