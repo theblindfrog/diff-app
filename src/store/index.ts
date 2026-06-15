@@ -77,8 +77,7 @@ export const useDiffStore = create<DiffState>((set, get) => ({
 
   setSide: (side, input) => set({ [side]: input } as Pick<DiffState, Side>),
 
-  setText: (side, text) =>
-    set((s) => ({ [side]: { ...s[side], text } } as Pick<DiffState, Side>)),
+  setText: (side, text) => set((s) => ({ [side]: { ...s[side], text } }) as Pick<DiffState, Side>),
 
   clearSide: (side) =>
     set({

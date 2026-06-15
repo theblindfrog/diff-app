@@ -6,11 +6,7 @@ import { clampTopHeight } from "./paneLayout";
  * Draggable divider between the top input area and the diff. Dragging sets the
  * top area's pixel height (clamped); the diff fills the remainder.
  */
-export function ResizeHandle({
-  inputsRef,
-}: {
-  inputsRef: RefObject<HTMLElement | null>;
-}) {
+export function ResizeHandle({ inputsRef }: { inputsRef: RefObject<HTMLElement | null> }) {
   const setTopPaneHeight = useDiffStore((s) => s.setTopPaneHeight);
   const dragging = useRef(false);
 

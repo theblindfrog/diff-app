@@ -38,7 +38,8 @@ export function useChangeNavigation(count: number): ChangeNavigation {
 
       if (e.key === "F8") {
         e.preventDefault();
-        e.shiftKey ? prev() : next();
+        if (e.shiftKey) prev();
+        else next();
       } else if (e.altKey && e.key === "ArrowDown") {
         e.preventDefault();
         next();

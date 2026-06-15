@@ -9,8 +9,12 @@ export function useDebouncedCallback<A extends unknown[]>(
   delay: number,
 ): (...args: A) => void {
   const fnRef = useRef(fn);
-  fnRef.current = fn;
   const timer = useRef<number | undefined>(undefined);
+
+  // Keep the ref pointing at the latest `fn` without reading it during render.
+  useEffect(() => {
+    fnRef.current = fn;
+  });
 
   useEffect(
     () => () => {
