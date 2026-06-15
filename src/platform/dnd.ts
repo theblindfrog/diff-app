@@ -14,9 +14,7 @@ export interface FileDropEvent {
  * `dragDropEnabled` is true, the OS intercepts drops before the DOM, so this
  * (not HTML5 ondrop) is how we get real filesystem paths. No-ops outside Tauri.
  */
-export async function onFileDrop(
-  handler: (e: FileDropEvent) => void,
-): Promise<() => void> {
+export async function onFileDrop(handler: (e: FileDropEvent) => void): Promise<() => void> {
   if (!isTauri) return () => {};
   return getCurrentWebview().onDragDropEvent((event) => {
     const p = event.payload as {

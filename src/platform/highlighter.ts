@@ -43,13 +43,11 @@ let started: Promise<void> | null = null;
 /** Idempotent: kicks off (and reuses) the shared highlighter preload. */
 export function ensureHighlighter(): Promise<void> {
   if (!started) {
-    started = preloadHighlighter({ themes: THEMES, langs: PRELOAD_LANGS }).catch(
-      (err) => {
-        // Reset so a later call can retry; rendering still works via on-demand load.
-        started = null;
-        console.error("Failed to preload highlighter", err);
-      },
-    );
+    started = preloadHighlighter({ themes: THEMES, langs: PRELOAD_LANGS }).catch((err) => {
+      // Reset so a later call can retry; rendering still works via on-demand load.
+      started = null;
+      console.error("Failed to preload highlighter", err);
+    });
   }
   return started;
 }

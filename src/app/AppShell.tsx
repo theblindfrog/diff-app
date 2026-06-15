@@ -42,11 +42,7 @@ export function AppShell() {
   return (
     <div className="app-shell">
       <TopBar />
-      <section
-        className="mode-content"
-        ref={inputsRef}
-        style={{ height: topPaneHeight }}
-      >
+      <section className="mode-content" ref={inputsRef} style={{ height: topPaneHeight }}>
         {mode === "paste" ? <PasteMode /> : <FilesMode />}
       </section>
       <ResizeHandle inputsRef={inputsRef} />

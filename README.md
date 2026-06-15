@@ -11,9 +11,9 @@ Built with **Tauri 2** (native macOS shell) + **React + TypeScript + Vite**.
 ## Features
 
 - **Two input modes** — segmented Files ↔ Paste switch.
-  - *Files*: open or drag-and-drop two files; live-watched with a Freeze toggle;
+  - _Files_: open or drag-and-drop two files; live-watched with a Freeze toggle;
     recent file pairs for quick re-opening.
-  - *Paste*: two editable panes that re-diff as you type.
+  - _Paste_: two editable panes that re-diff as you type.
 - **Split** (side-by-side) or **Unified** (stacked) layout.
 - **Syntax highlighting** — auto-detected from the file extension, with a manual
   language override.

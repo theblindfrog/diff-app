@@ -12,10 +12,7 @@ export async function readFile(path: string): Promise<string> {
  * Watches a single file, invoking `onChange` (debounced) when it changes on
  * disk. Returns an unwatch function. No-ops outside Tauri.
  */
-export async function watchFile(
-  path: string,
-  onChange: () => void,
-): Promise<UnwatchFn> {
+export async function watchFile(path: string, onChange: () => void): Promise<UnwatchFn> {
   if (!isTauri) return () => {};
   return watch(path, () => onChange(), { delayMs: 150 });
 }
