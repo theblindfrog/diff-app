@@ -5,7 +5,7 @@ export function TopBar() {
   return (
     <header className="topbar">
       <div className="topbar-lead">
-        <span className="app-title">Diff Viewer</span>
+        <span className="app-title">Differ</span>
         <ModeSwitcher />
       </div>
       <Toolbar />

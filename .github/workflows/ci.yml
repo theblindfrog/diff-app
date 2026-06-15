@@ -58,15 +58,13 @@ jobs:
         with:
           components: clippy
 
-      - name: Cache Cargo
-        uses: actions/cache@v4
+      # Caches cargo registry + dependency build artifacts, and cleans the
+      # workspace crate's own outputs before saving. That avoids caching the
+      # non-relocatable Tauri build artifacts (absolute permission-file paths)
+      # that previously poisoned the cache after the repo dir was renamed.
+      - uses: Swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            src-tauri/target
-          key: ${{ runner.os }}-cargo-v2-${{ hashFiles('src-tauri/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-cargo-v2-
+          workspaces: src-tauri
 
       - run: cargo check --manifest-path src-tauri/Cargo.toml
       - run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings

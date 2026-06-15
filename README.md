@@ -1,4 +1,4 @@
-# Diff Viewer
+# Differ
 
 A small macOS desktop app for comparing two pieces of code or text. Open two
 files (live-watched, so the diff updates when you save) or paste two blocks of
@@ -47,7 +47,7 @@ without an Apple Developer account or notarization. If you copy the `.dmg`
 elsewhere and Gatekeeper quarantines it:
 
 ```bash
-xattr -dr com.apple.quarantine "/Applications/Diff Viewer.app"
+xattr -dr com.apple.quarantine "/Applications/Differ.app"
 ```
 
 ## Architecture
