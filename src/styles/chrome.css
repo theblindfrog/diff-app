@@ -114,10 +114,12 @@ body {
   flex: none;
 }
 
-.app-title {
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: -0.01em;
+.app-logo {
+  display: block;
+  height: 18px;
+  width: auto;
+  /* Drives the wordmark ink via currentColor; flips with the theme token. */
+  color: var(--text);
 }
 
 .toolbar {
