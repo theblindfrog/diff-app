@@ -1,26 +1,19 @@
+import { SegmentedControl } from "@radix-ui/themes";
 import { useDiffStore } from "../store";
+import type { Layout } from "../types";
 
 export function LayoutToggle() {
   const layout = useDiffStore((s) => s.layout);
   const setLayout = useDiffStore((s) => s.setLayout);
   return (
-    <div className="segmented" role="group" aria-label="Diff layout">
-      <button
-        aria-pressed={layout === "split"}
-        className={layout === "split" ? "on" : ""}
-        onClick={() => setLayout("split")}
-        title="Side-by-side"
-      >
-        Split
-      </button>
-      <button
-        aria-pressed={layout === "unified"}
-        className={layout === "unified" ? "on" : ""}
-        onClick={() => setLayout("unified")}
-        title="Stacked"
-      >
-        Unified
-      </button>
-    </div>
+    <SegmentedControl.Root
+      size="1"
+      value={layout}
+      onValueChange={(v) => setLayout(v as Layout)}
+      aria-label="Diff layout"
+    >
+      <SegmentedControl.Item value="split">Split</SegmentedControl.Item>
+      <SegmentedControl.Item value="unified">Unified</SegmentedControl.Item>
+    </SegmentedControl.Root>
   );
 }

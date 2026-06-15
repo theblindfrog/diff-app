@@ -1,3 +1,4 @@
+import { Flex, IconButton, Text, Tooltip } from "@radix-ui/themes";
 import { useChangeNavigation } from "../diff/useChangeNavigation";
 
 export function ChangeNavigator({ count }: { count: number }) {
@@ -5,28 +6,40 @@ export function ChangeNavigator({ count }: { count: number }) {
   const disabled = count === 0;
 
   return (
-    <div className="navigator" role="group" aria-label="Navigate changes">
-      <button
-        className="nav-btn"
-        disabled={disabled}
-        onClick={prev}
-        title="Previous change (⇧F8 / ⌥↑)"
-        aria-label="Previous change"
+    <Flex align="center" gap="1" role="group" aria-label="Navigate changes">
+      <Tooltip content="Previous change (⇧F8 / ⌥↑)">
+        <IconButton
+          size="1"
+          variant="surface"
+          color="gray"
+          disabled={disabled}
+          onClick={prev}
+          aria-label="Previous change"
+        >
+          ‹
+        </IconButton>
+      </Tooltip>
+      <Text
+        size="1"
+        color="gray"
+        align="center"
+        style={{ minWidth: 70, fontVariantNumeric: "tabular-nums" }}
+        title={`${count} change region(s)`}
       >
-        ‹
-      </button>
-      <span className="nav-count" title={`${count} change region(s)`}>
         {count} {count === 1 ? "change" : "changes"}
-      </span>
-      <button
-        className="nav-btn"
-        disabled={disabled}
-        onClick={next}
-        title="Next change (F8 / ⌥↓)"
-        aria-label="Next change"
-      >
-        ›
-      </button>
-    </div>
+      </Text>
+      <Tooltip content="Next change (F8 / ⌥↓)">
+        <IconButton
+          size="1"
+          variant="surface"
+          color="gray"
+          disabled={disabled}
+          onClick={next}
+          aria-label="Next change"
+        >
+          ›
+        </IconButton>
+      </Tooltip>
+    </Flex>
   );
 }
