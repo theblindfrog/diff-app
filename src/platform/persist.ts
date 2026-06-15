@@ -14,7 +14,7 @@ export interface PersistedSettings {
 
 const STORE_FILE = "settings.json";
 const STORE_KEY = "settings";
-const LS_KEY = "diff-viewer-settings";
+const LS_KEY = "differ-settings";
 
 let storePromise: Promise<Store> | null = null;
 function getStore(): Promise<Store> {

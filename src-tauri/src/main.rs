@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    diff_viewer_lib::run()
+    differ_lib::run()
 }
