@@ -6,6 +6,7 @@ export interface PersistedSettings {
   mode: Mode;
   layout: Layout;
   themeType: ThemeType;
+  wordWrap: boolean;
   languageOverride: string | null;
   topPaneHeight: number;
   recentPairs: RecentPair[];

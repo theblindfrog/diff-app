@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import { useDiffStore } from "../store";
 import { scrollToHunk } from "./navigation";
 
 export interface ChangeNavigation {
@@ -13,6 +14,7 @@ export interface ChangeNavigation {
  */
 export function useChangeNavigation(count: number): ChangeNavigation {
   const index = useRef(-1);
+  const toggleWordWrap = useDiffStore((s) => s.toggleWordWrap);
 
   // Reset position whenever the diff changes shape.
   useEffect(() => {
@@ -36,7 +38,10 @@ export function useChangeNavigation(count: number): ChangeNavigation {
       const tag = (e.target as HTMLElement | null)?.tagName;
       if (tag === "TEXTAREA" || tag === "INPUT" || tag === "SELECT") return;
 
-      if (e.key === "F8") {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "w") {
+        e.preventDefault();
+        toggleWordWrap();
+      } else if (e.key === "F8") {
         e.preventDefault();
         if (e.shiftKey) prev();
         else next();
@@ -50,7 +55,7 @@ export function useChangeNavigation(count: number): ChangeNavigation {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [next, prev]);
+  }, [next, prev, toggleWordWrap]);
 
   return { next, prev };
 }
