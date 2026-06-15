@@ -15,6 +15,8 @@ export interface DiffState {
   new: SideInput;
   layout: Layout;
   themeType: ThemeType;
+  /** When true, long lines soft-wrap instead of scrolling horizontally. */
+  wordWrap: boolean;
   /** null = auto-detect from filename; otherwise a Shiki language id. */
   languageOverride: string | null;
   /** Files mode: when true, on-disk changes are ignored (kept watching). */
@@ -35,6 +37,8 @@ export interface DiffState {
   setLayout: (layout: Layout) => void;
   toggleLayout: () => void;
   setThemeType: (themeType: ThemeType) => void;
+  setWordWrap: (wordWrap: boolean) => void;
+  toggleWordWrap: () => void;
   setLanguageOverride: (lang: string | null) => void;
   setFrozen: (frozen: boolean) => void;
   toggleFrozen: () => void;
@@ -58,6 +62,7 @@ export const useDiffStore = create<DiffState>((set, get) => ({
   new: emptyPasteSide("new"),
   layout: "split",
   themeType: "system",
+  wordWrap: false,
   languageOverride: null,
   frozen: false,
   dropTarget: null,
@@ -90,6 +95,8 @@ export const useDiffStore = create<DiffState>((set, get) => ({
   toggleLayout: () => set((s) => ({ layout: s.layout === "split" ? "unified" : "split" })),
 
   setThemeType: (themeType) => set({ themeType }),
+  setWordWrap: (wordWrap) => set({ wordWrap }),
+  toggleWordWrap: () => set((s) => ({ wordWrap: !s.wordWrap })),
   setLanguageOverride: (languageOverride) => set({ languageOverride }),
 
   setFrozen: (frozen) => set({ frozen }),

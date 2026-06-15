@@ -3,6 +3,7 @@ import { useDiffStore } from "../store";
 import { useDiffModel } from "../diff/useDiffModel";
 import { computeStats, useFileDiff } from "../diff/useFileDiff";
 import { LayoutToggle } from "./LayoutToggle";
+import { WordWrapToggle } from "./WordWrapToggle";
 import { LanguagePicker } from "./LanguagePicker";
 import { StatsBadge } from "./StatsBadge";
 import { ThemeToggle } from "./ThemeToggle";
@@ -18,6 +19,7 @@ export function Toolbar() {
   return (
     <div className="toolbar">
       <LayoutToggle />
+      <WordWrapToggle />
       <LanguagePicker detected={language} />
       <ChangeNavigator count={stats.hunks} />
       <StatsBadge stats={stats} visible={hasContent} />
