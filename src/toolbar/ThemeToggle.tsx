@@ -1,3 +1,4 @@
+import { Button, Tooltip } from "@radix-ui/themes";
 import { useDiffStore } from "../store";
 import type { ThemeType } from "../types";
 
@@ -16,12 +17,10 @@ export function ThemeToggle() {
     themeType === "system" ? "light" : themeType === "light" ? "dark" : "system";
 
   return (
-    <button
-      className="toolbar-btn"
-      onClick={() => setThemeType(next)}
-      title={`Theme: ${LABELS[themeType]} (click for ${LABELS[next]})`}
-    >
-      {LABELS[themeType]}
-    </button>
+    <Tooltip content={`Theme: ${LABELS[themeType]} (click for ${LABELS[next]})`}>
+      <Button size="1" variant="surface" color="gray" onClick={() => setThemeType(next)}>
+        {LABELS[themeType]}
+      </Button>
+    </Tooltip>
   );
 }

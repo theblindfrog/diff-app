@@ -54,6 +54,16 @@
   color-scheme: light;
 }
 
+/* ---- Radix Themes bridge ----
+   The Radix controls and the hand-styled chrome must share one accent. Point
+   the kit's solid accent at the existing chrome tokens (which already flip via
+   the blocks above); Radix's grays/surfaces flip via <Theme appearance>. This
+   keeps GitHub-blue consistent everywhere, not the cooler Radix "blue" scale. */
+.radix-themes {
+  --accent-9: var(--accent);
+  --accent-contrast: var(--accent-contrast);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -122,140 +132,8 @@ body {
   flex: 1;
 }
 
-/* ---- Controls ---- */
-.segmented {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  overflow: hidden;
-  background: var(--panel);
-}
-
-.segmented button {
-  border: 0;
-  background: transparent;
-  color: var(--text-dim);
-  font: inherit;
-  font-size: 12px;
-  padding: 4px 11px;
-  cursor: pointer;
-}
-
-.segmented button + button {
-  border-left: 1px solid var(--border);
-}
-
-.segmented button.on {
-  background: var(--accent);
-  color: var(--accent-contrast);
-}
-
-.segmented button:not(.on):hover {
-  background: var(--hover);
-}
-
-.toolbar-btn {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  color: var(--text);
-  font: inherit;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 7px;
-  cursor: pointer;
-}
-
-.toolbar-btn:hover {
-  background: var(--hover);
-}
-
-.toolbar-btn.on {
-  background: var(--accent);
-  color: var(--accent-contrast);
-  border-color: var(--accent);
-}
-
-.lang-picker-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-
-.lang-picker {
-  appearance: none;
-  -webkit-appearance: none;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  color: var(--text);
-  font: inherit;
-  font-size: 12px;
-  padding: 4px 26px 4px 10px; /* extra right padding for the custom chevron */
-  border-radius: 7px;
-  cursor: pointer;
-  max-width: 180px;
-}
-
-.lang-picker:hover {
-  background: var(--hover);
-}
-
-.lang-picker:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
-
-/* Custom chevron, tinted via theme token so it tracks light/dark like the other controls. */
-.lang-picker-chevron {
-  position: absolute;
-  right: 9px;
-  width: 9px;
-  height: 9px;
-  pointer-events: none;
-  background: var(--text-dim);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-    no-repeat center / contain;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-    no-repeat center / contain;
-}
-
-/* ---- Change navigator ---- */
-.navigator {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.nav-btn {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  color: var(--text);
-  font-size: 15px;
-  line-height: 1;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-btn:hover:not(:disabled) {
-  background: var(--hover);
-}
-
-.nav-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.nav-count {
-  font-size: 12px;
-  color: var(--text-dim);
-  min-width: 70px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
+/* Toolbar controls (segmented, toggles, language select, change navigator) are
+   Radix Themes components; their accent is bridged to the chrome tokens above. */
 
 /* ---- Stats ---- */
 .stats-badge {

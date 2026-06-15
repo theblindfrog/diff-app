@@ -1,3 +1,4 @@
+import { Button, Tooltip } from "@radix-ui/themes";
 import { useDiffStore } from "../store";
 
 export function FreezeToggle() {
@@ -5,17 +6,23 @@ export function FreezeToggle() {
   const toggleFrozen = useDiffStore((s) => s.toggleFrozen);
 
   return (
-    <button
-      type="button"
-      className={`toolbar-btn${frozen ? " on" : ""}`}
-      onClick={toggleFrozen}
-      title={
+    <Tooltip
+      content={
         frozen
           ? "Frozen — ignoring on-disk changes (click to go live)"
           : "Live — re-diffs when files change on disk (click to freeze)"
       }
     >
-      {frozen ? "❄ Frozen" : "● Live"}
-    </button>
+      <Button
+        type="button"
+        size="1"
+        variant={frozen ? "solid" : "surface"}
+        color={frozen ? undefined : "gray"}
+        onClick={toggleFrozen}
+        aria-pressed={frozen}
+      >
+        {frozen ? "❄ Frozen" : "● Live"}
+      </Button>
+    </Tooltip>
   );
 }

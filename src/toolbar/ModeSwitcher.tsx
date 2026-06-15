@@ -1,26 +1,19 @@
+import { SegmentedControl } from "@radix-ui/themes";
 import { useDiffStore } from "../store";
+import type { Mode } from "../types";
 
 export function ModeSwitcher() {
   const mode = useDiffStore((s) => s.mode);
   const setMode = useDiffStore((s) => s.setMode);
   return (
-    <div className="segmented" role="tablist" aria-label="Input mode">
-      <button
-        role="tab"
-        aria-selected={mode === "files"}
-        className={mode === "files" ? "on" : ""}
-        onClick={() => setMode("files")}
-      >
-        Files
-      </button>
-      <button
-        role="tab"
-        aria-selected={mode === "paste"}
-        className={mode === "paste" ? "on" : ""}
-        onClick={() => setMode("paste")}
-      >
-        Paste
-      </button>
-    </div>
+    <SegmentedControl.Root
+      size="1"
+      value={mode}
+      onValueChange={(v) => setMode(v as Mode)}
+      aria-label="Input mode"
+    >
+      <SegmentedControl.Item value="files">Files</SegmentedControl.Item>
+      <SegmentedControl.Item value="paste">Paste</SegmentedControl.Item>
+    </SegmentedControl.Root>
   );
 }
