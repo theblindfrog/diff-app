@@ -175,16 +175,47 @@ body {
   border-color: var(--accent);
 }
 
+.lang-picker-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .lang-picker {
+  appearance: none;
+  -webkit-appearance: none;
   border: 1px solid var(--border);
   background: var(--panel);
   color: var(--text);
   font: inherit;
   font-size: 12px;
-  padding: 4px 8px;
+  padding: 4px 26px 4px 10px; /* extra right padding for the custom chevron */
   border-radius: 7px;
   cursor: pointer;
   max-width: 180px;
+}
+
+.lang-picker:hover {
+  background: var(--hover);
+}
+
+.lang-picker:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Custom chevron, tinted via theme token so it tracks light/dark like the other controls. */
+.lang-picker-chevron {
+  position: absolute;
+  right: 9px;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+  background: var(--text-dim);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat center / contain;
 }
 
 /* ---- Change navigator ---- */
