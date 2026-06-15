@@ -6,6 +6,7 @@ export function DiffView() {
   const { oldFile, newFile, hasContent } = useDiffModel();
   const layout = useDiffStore((s) => s.layout);
   const themeType = useDiffStore((s) => s.themeType);
+  const wordWrap = useDiffStore((s) => s.wordWrap);
 
   if (!hasContent) {
     return (
@@ -28,7 +29,7 @@ export function DiffView() {
           theme: { light: "github-light", dark: "github-dark" },
           themeType,
           lineDiffType: "word",
-          overflow: "scroll",
+          overflow: wordWrap ? "wrap" : "scroll",
           stickyHeader: false,
         }}
       />
