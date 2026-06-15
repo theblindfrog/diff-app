@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="public/wordmark-light-ink.svg" />
+    <img src="public/wordmark-dark-ink.svg" alt="Differ" width="280" />
+  </picture>
+</p>
+
 # Differ
 
 A small macOS desktop app for comparing two pieces of code or text. Open two
