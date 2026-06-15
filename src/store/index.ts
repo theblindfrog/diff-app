@@ -72,12 +72,10 @@ export const useDiffStore = create<DiffState>((set, get) => ({
 
   setMode: (mode) => {
     if (mode === get().mode) return;
-    // Reset both sides to that mode's empty shape so stale content/paths don't leak.
-    set(
-      mode === "paste"
-        ? { mode, old: emptyPasteSide("old"), new: emptyPasteSide("new"), frozen: false }
-        : { mode, old: emptyFileSide(), new: emptyFileSide(), frozen: false },
-    );
+    // Keep both sides (text, names, paths) intact so the diff and entered
+    // content survive a mode switch. Only new input — typing or loading a
+    // file — replaces a side.
+    set({ mode });
   },
 
   setSide: (side, input) => set({ [side]: input } as Pick<DiffState, Side>),
