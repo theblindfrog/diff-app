@@ -1,4 +1,8 @@
-dist
-src-tauri/target
+apps/desktop/dist
+apps/desktop/src-tauri/target
+apps/desktop/src-tauri/gen
+apps/web/.next
+apps/web/out
+apps/web/next-env.d.ts
 package-lock.json
 .context

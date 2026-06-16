@@ -29,7 +29,7 @@ jobs:
       - run: npm run format:check
 
   frontend:
-    name: Frontend (type check + build)
+    name: Frontend (type check + build desktop & web)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +46,8 @@ jobs:
           restore-keys: ${{ runner.os }}-npm-
 
       - run: npm ci
-      - run: npm run build
+      - run: npm run build:desktop
+      - run: npm run build:web
 
   rust:
     name: Rust (check + clippy + test)
@@ -64,8 +65,8 @@ jobs:
       # that previously poisoned the cache after the repo dir was renamed.
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: src-tauri
+          workspaces: apps/desktop/src-tauri
 
-      - run: cargo check --manifest-path src-tauri/Cargo.toml
-      - run: cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
-      - run: cargo test --manifest-path src-tauri/Cargo.toml
+      - run: cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
+      - run: cargo clippy --manifest-path apps/desktop/src-tauri/Cargo.toml -- -D warnings
+      - run: cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml

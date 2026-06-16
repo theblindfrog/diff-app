@@ -2,5 +2,5 @@
 
 [scripts]
 setup = "npm install"
-run = "npm run dev -- --port $CONDUCTOR_PORT"
+run = "npm run dev:web -- --port $CONDUCTOR_PORT"
 run_mode = "concurrent"

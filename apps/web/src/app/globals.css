@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+/*
+ * Differ marketing site — design tokens.
+ * Mirrors the desktop app's GitHub-inspired palette (see apps/desktop/src/styles/chrome.css)
+ * and follows macOS appearance via prefers-color-scheme, like the app itself.
+ */
+:root {
+  --canvas: #ffffff;
+  --elevated: #f6f8fa;
+  --surface: #ffffff;
+  --line: #d0d7de;
+  --line-soft: #e4e8ec;
+  --ink: #1f2328;
+  --muted: #656d76;
+  --accent: #0969da;
+  --accent-ink: #ffffff;
+  --add: #1a7f37;
+  --del: #cf222e;
+  --add-bg: #e6ffec;
+  --del-bg: #ffebe9;
+  --add-emph: #abf2bc;
+  --del-emph: #ffc9c4;
+  --gutter: #f6f8fa;
+  /* Fixed brand accents from the "D" monogram — identical in both themes. */
+  --brand-plus: #93cd92;
+  --brand-minus: #e86452;
+  /* Atmosphere */
+  --glow-a: rgba(9, 105, 218, 0.18);
+  --glow-b: rgba(147, 205, 146, 0.16);
+  --grid: rgba(31, 35, 40, 0.05);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas: #0d1117;
+    --elevated: #161b22;
+    --surface: #0d1117;
+    --line: #30363d;
+    --line-soft: #21262d;
+    --ink: #e6edf3;
+    --muted: #7d8590;
+    --accent: #2f81f7;
+    --accent-ink: #ffffff;
+    --add: #3fb950;
+    --del: #f85149;
+    --add-bg: rgba(46, 160, 67, 0.15);
+    --del-bg: rgba(248, 81, 73, 0.15);
+    --add-emph: rgba(46, 160, 67, 0.4);
+    --del-emph: rgba(248, 81, 73, 0.4);
+    --gutter: #0b0f14;
+    --glow-a: rgba(47, 129, 247, 0.22);
+    --glow-b: rgba(63, 185, 80, 0.16);
+    --grid: rgba(240, 246, 252, 0.04);
+    color-scheme: dark;
+  }
+}
+
+/* Map runtime variables to Tailwind tokens (inline = utilities reference the var, so they flip with the theme). */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-elevated: var(--elevated);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-add: var(--add);
+  --color-del: var(--del);
+  --color-add-bg: var(--add-bg);
+  --color-del-bg: var(--del-bg);
+  --color-add-emph: var(--add-emph);
+  --color-del-emph: var(--del-emph);
+  --color-gutter: var(--gutter);
+  --color-brand-plus: var(--brand-plus);
+  --color-brand-minus: var(--brand-minus);
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--add-emph);
+  color: var(--ink);
+}
+
+/* ---- Atmosphere ---------------------------------------------------------- */
+
+/* Subtle technical grid, fades toward the edges. */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, var(--grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 80%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 35%, transparent 80%);
+}
+
+/* Layered radial glow behind the hero. */
+.hero-glow {
+  background:
+    radial-gradient(40rem 28rem at 70% 8%, var(--glow-a), transparent 70%),
+    radial-gradient(34rem 24rem at 12% 30%, var(--glow-b), transparent 70%);
+}
+
+/* ---- Entrance motion (CSS only, server-component friendly) ---------------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    animation: none;
+  }
+}

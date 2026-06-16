@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="public/wordmark-light-ink.svg" />
-    <img src="public/wordmark-dark-ink.svg" alt="Differ" width="280" />
+    <source media="(prefers-color-scheme: dark)" srcset="apps/desktop/public/wordmark-light-ink.svg" />
+    <img src="apps/desktop/public/wordmark-dark-ink.svg" alt="Differ" width="280" />
   </picture>
 </p>
 
@@ -14,6 +14,15 @@ text (live-editable). Diffs are computed and rendered by
 with Shiki syntax highlighting.
 
 Built with **Tauri 2** (native macOS shell) + **React + TypeScript + Vite**.
+
+## Repository layout
+
+This is an npm-workspaces monorepo:
+
+- `apps/desktop` — the Differ desktop app (Tauri 2 + React + Vite).
+- `apps/web` — the marketing site ([Next.js](https://nextjs.org) + Tailwind CSS).
+
+Run `npm install` once at the root to install both workspaces.
 
 ## Features
 
@@ -32,23 +41,29 @@ Built with **Tauri 2** (native macOS shell) + **React + TypeScript + Vite**.
 ## Develop
 
 ```bash
-npm install
-npm run tauri dev     # native dev window with hot reload
+npm install           # installs all workspaces (run once at the repo root)
+npm run dev           # native dev window with hot reload (apps/desktop)
 ```
 
-The frontend alone (no native file features) also runs in a browser:
+The desktop frontend alone (no native file features) also runs in a browser:
 
 ```bash
-npm run dev           # http://localhost:1420
+npm run dev -w apps/desktop   # http://localhost:1420 (Vite)
+```
+
+The marketing site:
+
+```bash
+npm run dev:web       # http://localhost:3000 (Next.js)
 ```
 
 ## Build (personal use)
 
 ```bash
-npm run tauri build
+npm run tauri build   # builds the desktop app (apps/desktop)
 ```
 
-Outputs a `.app` and `.dmg` under `src-tauri/target/release/bundle/`. The app is
+Outputs a `.app` and `.dmg` under `apps/desktop/src-tauri/target/release/bundle/`. The app is
 ad-hoc signed (`signingIdentity: "-"`) so it runs locally on Apple Silicon
 without an Apple Developer account or notarization. If you copy the `.dmg`
 elsewhere and Gatekeeper quarantines it:

@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Next.js / Vercel (apps/web also has its own .gitignore)
+.next
+out
+.vercel
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

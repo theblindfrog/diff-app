@@ -1,46 +1,23 @@
 {
-  "name": "differ",
+  "name": "differ-monorepo",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.0.0",
   "author": "Alex Powell",
   "license": "SEE LICENSE IN LICENSE",
-  "type": "module",
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "dev": "npm run tauri dev -w apps/desktop",
+    "dev:web": "npm run dev -w apps/web",
+    "build:desktop": "npm run build -w apps/desktop",
+    "build:web": "npm run build -w apps/web",
+    "tauri": "npm run tauri -w apps/desktop --",
+    "lint": "npm run lint -w apps/desktop && npm run lint -w apps/web",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
-  "dependencies": {
-    "@pierre/diffs": "^1.2.10",
-    "@radix-ui/themes": "^3.3.0",
-    "@tauri-apps/api": "^2",
-    "@tauri-apps/plugin-dialog": "^2",
-    "@tauri-apps/plugin-fs": "^2",
-    "@tauri-apps/plugin-store": "^2",
-    "@tauri-apps/plugin-window-state": "^2",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "zustand": "^5.0.2"
-  },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@tauri-apps/cli": "^2",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-react": "^6.0.2",
-    "eslint": "^10.5.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.3",
-    "globals": "^17.6.0",
-    "prettier": "^3.8.4",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "^8.61.0",
-    "vite": "^8.0.16"
+    "prettier": "^3.8.4"
   }
 }
