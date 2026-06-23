@@ -21,7 +21,7 @@ export function Toolbar() {
       <LayoutToggle />
       <WordWrapToggle />
       <LanguagePicker detected={language} />
-      <ChangeNavigator count={stats.hunks} />
+      <ChangeNavigator hunks={fd.hunks} />
       <StatsBadge stats={stats} visible={hasContent} />
       <div className="toolbar-spacer" />
       {mode === "files" && <FreezeToggle />}

@@ -1,4 +1,4 @@
-import { MultiFileDiff } from "@pierre/diffs/react";
+import { MultiFileDiff, Virtualizer } from "@pierre/diffs/react";
 import { useDiffStore } from "../store";
 import { useDiffModel } from "./useDiffModel";
 
@@ -19,8 +19,12 @@ export function DiffView() {
     );
   }
 
+  // The Virtualizer renders its own scroll container (root + content div) and
+  // supplies the context that flips MultiFileDiff onto its virtualized renderer,
+  // so only on-screen rows hit the DOM. Without it the whole diff (thousands of
+  // rows for large files) renders synchronously and freezes the UI.
   return (
-    <div className="diff-scroll">
+    <Virtualizer className="diff-scroll">
       <MultiFileDiff
         oldFile={oldFile}
         newFile={newFile}
@@ -33,6 +37,6 @@ export function DiffView() {
           stickyHeader: false,
         }}
       />
-    </div>
+    </Virtualizer>
   );
 }

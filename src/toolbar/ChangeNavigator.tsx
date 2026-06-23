@@ -1,8 +1,10 @@
 import { Flex, IconButton, Text, Tooltip } from "@radix-ui/themes";
+import type { Hunk } from "@pierre/diffs";
 import { useChangeNavigation } from "../diff/useChangeNavigation";
 
-export function ChangeNavigator({ count }: { count: number }) {
-  const { next, prev } = useChangeNavigation(count);
+export function ChangeNavigator({ hunks }: { hunks: Hunk[] }) {
+  const { next, prev } = useChangeNavigation(hunks);
+  const count = hunks.length;
   const disabled = count === 0;
 
   return (
