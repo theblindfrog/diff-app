@@ -71,7 +71,11 @@ function refine(scroller: HTMLElement, estimatedTop: number): void {
   const sr = getChangeHost()?.shadowRoot;
   if (!sr) return;
 
-  const top = nearestTop(scroller, sr.querySelectorAll<HTMLElement>(CHANGE_ROW_SELECTOR), estimatedTop);
+  const top = nearestTop(
+    scroller,
+    sr.querySelectorAll<HTMLElement>(CHANGE_ROW_SELECTOR),
+    estimatedTop,
+  );
   if (top != null) {
     scroller.scrollTo({
       top: Math.max(0, top - scroller.clientHeight * VIEWPORT_ANCHOR),
