@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import type { Hunk } from "@pierre/diffs";
 import { useDiffStore } from "../store";
 import { scrollToHunk } from "./navigation";
 
@@ -9,12 +10,15 @@ export interface ChangeNavigation {
 
 /**
  * Drives next/prev change navigation and binds global shortcuts (F8 / Shift+F8
- * and Alt+Down / Alt+Up). `count` is the number of change regions; navigation
- * is a no-op when it's zero. Shortcuts are ignored while typing in a field.
+ * and Alt+Down / Alt+Up). Navigation targets the parsed `hunks` directly (the
+ * diff is virtualized, so off-screen rows aren't in the DOM); it's a no-op when
+ * there are none. Shortcuts are ignored while typing in a field.
  */
-export function useChangeNavigation(count: number): ChangeNavigation {
+export function useChangeNavigation(hunks: Hunk[]): ChangeNavigation {
   const index = useRef(-1);
+  const layout = useDiffStore((s) => s.layout);
   const toggleWordWrap = useDiffStore((s) => s.toggleWordWrap);
+  const count = hunks.length;
 
   // Reset position whenever the diff changes shape.
   useEffect(() => {
@@ -24,14 +28,14 @@ export function useChangeNavigation(count: number): ChangeNavigation {
   const next = useCallback(() => {
     if (count === 0) return;
     const target = Math.min((index.current < 0 ? -1 : index.current) + 1, count - 1);
-    index.current = scrollToHunk(target);
-  }, [count]);
+    index.current = scrollToHunk(hunks, target, layout);
+  }, [hunks, count, layout]);
 
   const prev = useCallback(() => {
     if (count === 0) return;
     const target = Math.max((index.current < 0 ? count : index.current) - 1, 0);
-    index.current = scrollToHunk(target);
-  }, [count]);
+    index.current = scrollToHunk(hunks, target, layout);
+  }, [hunks, count, layout]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
