@@ -419,6 +419,24 @@ body {
 
 .diff-scroll diffs-container {
   display: block;
+
+  /* The library tints changed [data-diff-span] segments at only 15–20% of the
+     add/del colour over an already-pale line — invisible for a small edit in a
+     long line. These override hooks (read inside the diff's shadow DOM; custom
+     properties inherit across the boundary) raise it to a solid, GitHub-style
+     fill so the exact sub-change stands out. --diffs-{addition,deletion}-base
+     is the library's own theme-correct colour (falls back to our --add/--del
+     chrome tokens); color-mix sets the opacity. */
+  --diffs-bg-addition-emphasis-override: color-mix(
+    in srgb,
+    var(--diffs-addition-base, var(--add)) 42%,
+    transparent
+  );
+  --diffs-bg-deletion-emphasis-override: color-mix(
+    in srgb,
+    var(--diffs-deletion-base, var(--del)) 42%,
+    transparent
+  );
 }
 
 .diff-empty {

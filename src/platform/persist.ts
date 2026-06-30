@@ -1,11 +1,12 @@
 import { load, type Store } from "@tauri-apps/plugin-store";
 import { isTauri } from "./env";
-import type { Layout, Mode, RecentPair, ThemeType } from "../types";
+import type { Layout, LineDiffType, Mode, RecentPair, ThemeType } from "../types";
 
 export interface PersistedSettings {
   mode: Mode;
   layout: Layout;
   themeType: ThemeType;
+  lineDiffType: LineDiffType;
   wordWrap: boolean;
   languageOverride: string | null;
   topPaneHeight: number;

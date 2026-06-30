@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Layout, Mode, RecentPair, Side, SideInput, ThemeType } from "../types";
+import type { Layout, LineDiffType, Mode, RecentPair, Side, SideInput, ThemeType } from "../types";
 
 const MAX_RECENTS = 12;
 
@@ -15,6 +15,8 @@ export interface DiffState {
   new: SideInput;
   layout: Layout;
   themeType: ThemeType;
+  /** Word- vs character-level highlighting of changes within a line. */
+  lineDiffType: LineDiffType;
   /** When true, long lines soft-wrap instead of scrolling horizontally. */
   wordWrap: boolean;
   /** null = auto-detect from filename; otherwise a Shiki language id. */
@@ -37,6 +39,7 @@ export interface DiffState {
   setLayout: (layout: Layout) => void;
   toggleLayout: () => void;
   setThemeType: (themeType: ThemeType) => void;
+  setLineDiffType: (lineDiffType: LineDiffType) => void;
   setWordWrap: (wordWrap: boolean) => void;
   toggleWordWrap: () => void;
   setLanguageOverride: (lang: string | null) => void;
@@ -62,6 +65,7 @@ export const useDiffStore = create<DiffState>((set, get) => ({
   new: emptyPasteSide("new"),
   layout: "split",
   themeType: "system",
+  lineDiffType: "word",
   wordWrap: false,
   languageOverride: null,
   frozen: false,
@@ -93,6 +97,7 @@ export const useDiffStore = create<DiffState>((set, get) => ({
   toggleLayout: () => set((s) => ({ layout: s.layout === "split" ? "unified" : "split" })),
 
   setThemeType: (themeType) => set({ themeType }),
+  setLineDiffType: (lineDiffType) => set({ lineDiffType }),
   setWordWrap: (wordWrap) => set({ wordWrap }),
   toggleWordWrap: () => set((s) => ({ wordWrap: !s.wordWrap })),
   setLanguageOverride: (languageOverride) => set({ languageOverride }),

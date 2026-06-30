@@ -14,6 +14,8 @@ import type { Layout } from "../types";
 
 const FALLBACK_ROW_HEIGHT = 20;
 const CHANGE_ROW_SELECTOR = '[data-line-type^="change-"]';
+/** Changed sub-segments within a line (the library's word/char diff spans). */
+const SEGMENT_SELECTOR = "[data-diff-span]";
 /** Place the target row ~35% down the viewport, matching the old behavior. */
 const VIEWPORT_ANCHOR = 0.35;
 
@@ -60,6 +62,29 @@ function nearestTop(
   return bestTop;
 }
 
+/** The changed sub-segment whose row is nearest `estimatedTop` — i.e. the first
+ * intra-line change of the hunk we navigated to, or null if none is rendered. */
+function nearestSegment(
+  sr: ShadowRoot,
+  scroller: HTMLElement,
+  estimatedTop: number,
+): HTMLElement | null {
+  const scTop = scroller.getBoundingClientRect().top;
+  let best: HTMLElement | null = null;
+  let bestDist = Number.POSITIVE_INFINITY;
+  for (const el of sr.querySelectorAll<HTMLElement>(SEGMENT_SELECTOR)) {
+    const r = el.getBoundingClientRect();
+    if (r.height === 0) continue;
+    const top = r.top - scTop + scroller.scrollTop;
+    const dist = Math.abs(top - estimatedTop);
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = el;
+    }
+  }
+  return best;
+}
+
 /**
  * Once the coarse scroll has rendered the target region, snap onto the real
  * row nearest the metadata estimate. This corrects for the file-header offset
@@ -82,6 +107,18 @@ function refine(scroller: HTMLElement, estimatedTop: number): void {
       behavior: "smooth",
     });
   }
+
+  // Bring this hunk's first changed sub-segment into horizontal view, so a tiny
+  // edit buried deep in a long unwrapped line is visible. scrollIntoView crosses
+  // the shadow boundary and adjusts whichever scroller carries the horizontal
+  // overflow; `block: "nearest"` leaves the vertical snap above untouched (the
+  // row is already in the viewport). No-op when wrapped or when the hunk has no
+  // inline segment (pure add/del lines, or inline diffs disabled on huge files).
+  nearestSegment(sr, scroller, estimatedTop)?.scrollIntoView({
+    block: "nearest",
+    inline: "center",
+    behavior: "smooth",
+  });
 }
 
 /**

@@ -1,12 +1,25 @@
-import { MultiFileDiff, Virtualizer } from "@pierre/diffs/react";
+import { useEffect } from "react";
+import { MultiFileDiff, Virtualizer, useWorkerPool } from "@pierre/diffs/react";
 import { useDiffStore } from "../store";
+import { MAX_LINE_DIFF_LENGTH } from "../platform/highlighter";
 import { useDiffModel } from "./useDiffModel";
 
 export function DiffView() {
   const { oldFile, newFile, hasContent } = useDiffModel();
   const layout = useDiffStore((s) => s.layout);
   const themeType = useDiffStore((s) => s.themeType);
+  const lineDiffType = useDiffStore((s) => s.lineDiffType);
   const wordWrap = useDiffStore((s) => s.wordWrap);
+
+  // The worker pool's lineDiffType is fixed at construction — the React layer
+  // never forwards the per-render <MultiFileDiff> option to it — so the Word/
+  // Char toggle has to drive it imperatively. setRenderOptions clears the diff
+  // caches and re-renders the mounted diff at the new granularity. (We keep the
+  // option on MultiFileDiff too, for the on-thread fallback when no pool runs.)
+  const pool = useWorkerPool();
+  useEffect(() => {
+    pool?.setRenderOptions({ lineDiffType, maxLineDiffLength: MAX_LINE_DIFF_LENGTH });
+  }, [pool, lineDiffType]);
 
   if (!hasContent) {
     return (
@@ -32,7 +45,8 @@ export function DiffView() {
           diffStyle: layout,
           theme: { light: "github-light", dark: "github-dark" },
           themeType,
-          lineDiffType: "word",
+          lineDiffType,
+          maxLineDiffLength: MAX_LINE_DIFF_LENGTH,
           overflow: wordWrap ? "wrap" : "scroll",
           stickyHeader: false,
         }}
