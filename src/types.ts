@@ -1,6 +1,8 @@
 export type Side = "old" | "new";
 export type Mode = "files" | "paste";
 export type Layout = "split" | "unified";
+/** Intra-line diff granularity. Maps to @pierre/diffs `options.lineDiffType`. */
+export type LineDiffType = "word" | "char";
 /** Maps directly to @pierre/diffs `options.themeType`. */
 export type ThemeType = "system" | "light" | "dark";
 

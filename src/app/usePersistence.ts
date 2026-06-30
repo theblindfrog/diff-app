@@ -7,6 +7,7 @@ function subset(s: ReturnType<typeof useDiffStore.getState>): PersistedSettings 
     mode: s.mode,
     layout: s.layout,
     themeType: s.themeType,
+    lineDiffType: s.lineDiffType,
     wordWrap: s.wordWrap,
     languageOverride: s.languageOverride,
     topPaneHeight: s.topPaneHeight,
