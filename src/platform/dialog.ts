@@ -1,4 +1,4 @@
-import { open } from "@tauri-apps/plugin-dialog";
+import { message, open } from "@tauri-apps/plugin-dialog";
 import { isTauri } from "./env";
 
 const FILTERS = [
@@ -58,4 +58,10 @@ export async function pickFiles(): Promise<string[] | null> {
   if (!isTauri) return null;
   const result = await open({ multiple: true, directory: false, filters: FILTERS });
   return Array.isArray(result) ? result : null;
+}
+
+/** Shows a native error alert. No-ops outside Tauri. */
+export async function showError(text: string): Promise<void> {
+  if (!isTauri) return;
+  await message(text, { title: "Differ", kind: "error" });
 }

@@ -8,6 +8,7 @@ import { ResizeHandle } from "./ResizeHandle";
 import { clampTopHeight } from "./paneLayout";
 import { useFileDrop } from "../modes/files/useFileDrop";
 import { useFileWatch } from "../modes/files/useFileWatch";
+import { useDockOpen } from "../modes/files/dockOpen";
 
 export function AppShell() {
   const mode = useDiffStore((s) => s.mode);
@@ -19,6 +20,8 @@ export function AppShell() {
   // Global native file drag-and-drop + live re-diff of watched files.
   useFileDrop();
   useFileWatch();
+  // Files dropped on the Dock icon (or opened via "Open With").
+  useDockOpen();
 
   // Keep the top-area height valid for the current window size.
   const reclamp = useCallback(() => {
