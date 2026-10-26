@@ -10,6 +10,7 @@ import { StatsBadge } from "./StatsBadge";
 import { ThemeToggle } from "./ThemeToggle";
 import { ChangeNavigator } from "./ChangeNavigator";
 import { FreezeToggle } from "./FreezeToggle";
+import { SearchBox } from "./SearchBox";
 
 export function Toolbar() {
   const { oldFile, newFile, language, hasContent } = useDiffModel();
@@ -26,6 +27,7 @@ export function Toolbar() {
       <ChangeNavigator hunks={fd.hunks} />
       <StatsBadge stats={stats} visible={hasContent} />
       <div className="toolbar-spacer" />
+      <SearchBox />
       {mode === "files" && <FreezeToggle />}
       <ThemeToggle />
     </div>
