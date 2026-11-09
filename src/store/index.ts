@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { HunkExpansionRegion } from "@pierre/diffs";
 import type { Layout, LineDiffType, Mode, RecentPair, Side, SideInput, ThemeType } from "../types";
 
 const MAX_RECENTS = 12;
@@ -28,6 +29,14 @@ export interface DiffState {
   /** Height (px) of the top input area; the diff fills the rest. Resizable. */
   topPaneHeight: number;
   recentPairs: RecentPair[];
+  /** Find-in-diff query ("" = no search). */
+  searchQuery: string;
+  searchCaseSensitive: boolean;
+  /** Identity of the current match (see `matchId`), or null for none. */
+  searchActiveId: string | null;
+  /** The renderer's expanded-context state, mirrored so search can skip folded
+   * lines. Keyed by hunk index; `hunks.length` is the trailing region. */
+  expandedHunks: ReadonlyMap<number, HunkExpansionRegion>;
   /** True once persisted prefs have been loaded (avoids first-paint flicker). */
   hydrated: boolean;
 
@@ -49,6 +58,10 @@ export interface DiffState {
   setTopPaneHeight: (height: number) => void;
   addRecentPair: (pair: RecentPair) => void;
   removeRecentPair: (pair: RecentPair) => void;
+  setSearchQuery: (query: string) => void;
+  toggleSearchCaseSensitive: () => void;
+  setSearchActiveId: (id: string | null) => void;
+  setExpandedHunks: (expanded: ReadonlyMap<number, HunkExpansionRegion>) => void;
   hydrate: (partial: Partial<DiffState>) => void;
 }
 
@@ -72,6 +85,10 @@ export const useDiffStore = create<DiffState>((set, get) => ({
   dropTarget: null,
   topPaneHeight: 280,
   recentPairs: [],
+  searchQuery: "",
+  searchCaseSensitive: false,
+  searchActiveId: null,
+  expandedHunks: new Map(),
   hydrated: false,
 
   setMode: (mode) => {
@@ -121,6 +138,11 @@ export const useDiffStore = create<DiffState>((set, get) => ({
         (p) => !(p.oldPath === pair.oldPath && p.newPath === pair.newPath),
       ),
     })),
+
+  setSearchQuery: (searchQuery) => set({ searchQuery }),
+  toggleSearchCaseSensitive: () => set((s) => ({ searchCaseSensitive: !s.searchCaseSensitive })),
+  setSearchActiveId: (searchActiveId) => set({ searchActiveId }),
+  setExpandedHunks: (expandedHunks) => set({ expandedHunks }),
 
   hydrate: (partial) => set({ ...partial, hydrated: true }),
 }));

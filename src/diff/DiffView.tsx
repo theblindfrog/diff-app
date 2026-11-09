@@ -4,6 +4,8 @@ import { useDiffStore } from "../store";
 import { MAX_LINE_DIFF_LENGTH } from "../platform/highlighter";
 import { useDiffModel } from "./useDiffModel";
 import { useFileDiff, computeStats } from "./useFileDiff";
+import { useSearchSync } from "./useSearchSync";
+import { SEARCH_HIGHLIGHT_CSS } from "./searchDom";
 
 /**
  * A content-identity key for the rendered diff: any change to either side yields
@@ -39,6 +41,10 @@ export function DiffView() {
   // the content plainly instead. Reuses the same cached parse the toolbar uses.
   const noChanges = computeStats(useFileDiff(oldFile, newFile)).hunks === 0;
 
+  // Find-in-diff: tracks expanded context and paints match highlights.
+  const key = diffKey(oldFile.contents, newFile.contents);
+  const onPostRender = useSearchSync(key);
+
   // The worker pool's lineDiffType is fixed at construction — the React layer
   // never forwards the per-render <MultiFileDiff> option to it — so the Word/
   // Char toggle has to drive it imperatively. setRenderOptions clears the diff
@@ -70,18 +76,20 @@ export function DiffView() {
         // Identical sides: show the content read-only, syntax-highlighted but
         // with no add/del diff coloring, instead of an empty diff body.
         <File
-          key={diffKey(oldFile.contents, newFile.contents)}
+          key={key}
           file={newFile}
           options={{
             theme: { light: "github-light", dark: "github-dark" },
             themeType,
             overflow: wordWrap ? "wrap" : "scroll",
             disableFileHeader: true,
+            unsafeCSS: SEARCH_HIGHLIGHT_CSS,
+            onPostRender,
           }}
         />
       ) : (
         <MultiFileDiff
-          key={diffKey(oldFile.contents, newFile.contents)}
+          key={key}
           oldFile={oldFile}
           newFile={newFile}
           options={{
@@ -92,6 +100,8 @@ export function DiffView() {
             maxLineDiffLength: MAX_LINE_DIFF_LENGTH,
             overflow: wordWrap ? "wrap" : "scroll",
             stickyHeader: false,
+            unsafeCSS: SEARCH_HIGHLIGHT_CSS,
+            onPostRender,
           }}
         />
       )}
