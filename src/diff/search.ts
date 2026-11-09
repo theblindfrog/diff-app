@@ -175,18 +175,24 @@ export function plainFileLines(text: string): VisibleLine[] {
 function lowerWithOffsets(text: string): { lower: string; toOrig: number[] | null } {
   const lower = text.toLowerCase();
   if (lower.length === text.length) return { lower, toOrig: null };
-  // Lower one character at a time so each output unit knows its source.
-  let built = "";
+  // Search the whole-string result (it applies context rules such as Greek
+  // final sigma, matching how the query is lowered); lower one character at a
+  // time only to learn which source character each output unit came from.
+  // Context rules swap characters but never change their length, so the map
+  // lines up with `lower`.
+  let perChar = "";
   const toOrig: number[] = [];
   for (let i = 0; i < text.length;) {
     const ch = String.fromCodePoint(text.codePointAt(i)!);
     const low = ch.toLowerCase();
     for (let k = 0; k < low.length; k++) toOrig.push(i);
-    built += low;
+    perChar += low;
     i += ch.length;
   }
   toOrig.push(text.length);
-  return { lower: built, toOrig };
+  // Should the lengths ever disagree, search the per-character result, which
+  // the map is guaranteed to fit.
+  return { lower: perChar.length === lower.length ? lower : perChar, toOrig };
 }
 
 /** Original-text offset just past the character that lowered-offset `i - 1`

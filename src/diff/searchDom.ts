@@ -224,6 +224,14 @@ function correctTowards(scroller: HTMLElement, targetOrd: number, order: number[
   scroller.scrollTo({ top: Math.max(0, top - scroller.clientHeight * VIEWPORT_ANCHOR) });
 }
 
+/** Bumped by every jump; pending retries of older jumps see it and stop. */
+let navigation = 0;
+
+/** Abandons any in-flight `scrollToMatch` retries (e.g. the search was cleared). */
+export function cancelScrollToMatch(): void {
+  navigation++;
+}
+
 /**
  * Scrolls `match` into view. A coarse jump estimated from the metadata mounts
  * its region in the virtualizer, then a DOM pass snaps onto the real row. While
@@ -231,6 +239,7 @@ function correctTowards(scroller: HTMLElement, targetOrd: number, order: number[
  * mount, so uneven row heights can't leave the match off-screen.
  */
 export function scrollToMatch(match: SearchMatch, lines: VisibleLine[], layout: Layout): void {
+  const gen = ++navigation;
   const scroller = getDiffScroller();
   if (!scroller) return;
 
@@ -247,6 +256,8 @@ export function scrollToMatch(match: SearchMatch, lines: VisibleLine[], layout: 
   const targetOrd = ordinalOf(order, rowOf(match.line, layout));
   let tries = 30;
   const attempt = () => {
+    // A newer jump (or a cleared search) supersedes this one; stop steering.
+    if (gen !== navigation) return;
     if (refine(scroller, match) || --tries <= 0) return;
     correctTowards(scroller, targetOrd, order, layout);
     requestAnimationFrame(attempt);

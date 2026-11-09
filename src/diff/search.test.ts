@@ -111,6 +111,8 @@ describe("findMatches", () => {
     expect([m.start, m.end]).toEqual([2, 5]);
     const [i] = findMatches(plainFileLines("aİb"), "i̇b", false, "unified");
     expect([i.start, i.end]).toEqual([1, 3]);
+    // Whole-string lowering turns a word-final "Σ" into "ς", as for the query.
+    expect(findMatches(plainFileLines("İ ΟΣ"), "ΟΣ", false, "unified")).toHaveLength(1);
   });
 
   it("orders split-view matches left column first within a row", () => {

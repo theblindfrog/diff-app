@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { Flex, IconButton, Text, TextField, Tooltip } from "@radix-ui/themes";
 import { useDiffStore } from "../store";
 import { matchId, matchesFor, useDiffSearch } from "../diff/useDiffSearch";
-import { scrollToMatch } from "../diff/searchDom";
+import { cancelScrollToMatch, scrollToMatch } from "../diff/searchDom";
 import type { SearchMatch } from "../diff/search";
 
 /**
@@ -25,6 +25,7 @@ export function SearchBox() {
     (m: SearchMatch | undefined) => {
       setActiveId(m ? matchId(m) : null);
       if (m) scrollToMatch(m, lines, layout);
+      else cancelScrollToMatch();
     },
     [setActiveId, lines, layout],
   );
@@ -89,6 +90,7 @@ export function SearchBox() {
             e.preventDefault();
             setQuery("");
             setActiveId(null);
+            cancelScrollToMatch();
             e.currentTarget.blur();
           }
         }}
