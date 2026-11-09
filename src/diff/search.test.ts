@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { parseDiffFromFile } from "@pierre/diffs";
 import type { FileDiffMetadata, HunkExpansionRegion } from "@pierre/diffs";
+// Imported by path, not from the package root: the root entry touches
+// `navigator` at load, which Node 20 (CI) lacks.
+import { parseDiffFromFile } from "../../node_modules/@pierre/diffs/dist/utils/parseDiffFromFile.js";
 // Not part of the package's public exports; imported by path purely as a test
 // oracle so our visible-line walk can't drift from the renderer's own.
 import { iterateOverDiff } from "../../node_modules/@pierre/diffs/dist/utils/iterateOverDiff.js";
