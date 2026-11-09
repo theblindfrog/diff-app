@@ -166,6 +166,38 @@ export function plainFileLines(text: string): VisibleLine[] {
 }
 
 /**
+ * Lowercases `text`, returning the lowered string and a map from each of its
+ * code-unit offsets (plus the end) back to an offset in `text`. Lowercasing
+ * can change length (e.g. "İ" → "i̇"), so match offsets in the lowered string
+ * aren't valid in the original without this. Null when lengths agree and
+ * offsets carry over as-is.
+ */
+function lowerWithOffsets(text: string): { lower: string; toOrig: number[] | null } {
+  const lower = text.toLowerCase();
+  if (lower.length === text.length) return { lower, toOrig: null };
+  // Lower one character at a time so each output unit knows its source.
+  let built = "";
+  const toOrig: number[] = [];
+  for (let i = 0; i < text.length;) {
+    const ch = String.fromCodePoint(text.codePointAt(i)!);
+    const low = ch.toLowerCase();
+    for (let k = 0; k < low.length; k++) toOrig.push(i);
+    built += low;
+    i += ch.length;
+  }
+  toOrig.push(text.length);
+  return { lower: built, toOrig };
+}
+
+/** Original-text offset just past the character that lowered-offset `i - 1`
+ * came from, so a match ending inside an expanded character covers all of it. */
+function origEndOf(text: string, toOrig: number[], i: number): number {
+  if (i === 0) return 0;
+  const src = toOrig[i - 1];
+  return src + String.fromCodePoint(text.codePointAt(src)!).length;
+}
+
+/**
  * Case-(in)sensitive substring matches across `lines`, ordered as they read on
  * screen for `layout` (in split view the left column's line comes first).
  */
@@ -179,13 +211,19 @@ export function findMatches(
   const needle = caseSensitive ? query : query.toLowerCase();
   const matches: SearchMatch[] = [];
   for (const line of lines) {
-    const hay = caseSensitive ? line.text : line.text.toLowerCase();
+    const { lower: hay, toOrig } = caseSensitive
+      ? { lower: line.text, toOrig: null }
+      : lowerWithOffsets(line.text);
     let from = 0;
     for (;;) {
       const at = hay.indexOf(needle, from);
       if (at < 0) break;
-      matches.push({ line, start: at, end: at + needle.length });
-      from = at + needle.length;
+      const end = at + needle.length;
+      // Offsets must index the original text, which is what the row renders.
+      const start = toOrig ? toOrig[at] : at;
+      const origEnd = toOrig ? origEndOf(line.text, toOrig, end) : end;
+      matches.push({ line, start, end: origEnd });
+      from = end;
     }
   }
   if (layout === "split") {

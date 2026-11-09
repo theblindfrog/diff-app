@@ -147,32 +147,88 @@ function refine(scroller: HTMLElement, match: SearchMatch): boolean {
   const row = sr ? rowsFor(sr, match)[0] : undefined;
   if (!row) return false;
 
-  // Leave the scroll alone if the row is already comfortably on screen, so
-  // stepping through nearby matches doesn't jolt the view.
+  // Aim at the matched text rather than the row: a wrapped line can be taller
+  // than the viewport, with the match far below the row's top.
+  const range = rangeIn(row, match.start, match.end);
+  const target = (range ?? row).getBoundingClientRect();
+
+  // Leave the scroll alone if the match is already on screen, so stepping
+  // through nearby matches doesn't jolt the view.
   const sc = scroller.getBoundingClientRect();
-  const rr = row.getBoundingClientRect();
-  if (rr.top < sc.top || rr.bottom > sc.bottom) {
-    const top = rr.top - sc.top + scroller.scrollTop;
+  if (target.top < sc.top || target.bottom > sc.bottom) {
+    const top = target.top - sc.top + scroller.scrollTop;
     scroller.scrollTo({ top: Math.max(0, top - scroller.clientHeight * VIEWPORT_ANCHOR) });
   }
 
   // Bring the match itself into horizontal view on long unwrapped lines.
-  const range = rangeIn(row, match.start, match.end);
   const hs = horizontalScroller(row);
   if (range && hs) {
-    const r = range.getBoundingClientRect();
     const box = hs.getBoundingClientRect();
-    if (r.left < box.left || r.right > box.right) {
-      hs.scrollLeft += r.left - box.left - (box.width - r.width) / 2;
+    if (target.left < box.left || target.right > box.right) {
+      hs.scrollLeft += target.left - box.left - (box.width - target.width) / 2;
     }
   }
   return true;
 }
 
+/** Layout row index encoded in a rendered row's `data-line-index` ("u,s" for
+ * diffs, a single index for the plain file view). */
+function mountedRowIndex(key: string, layout: Layout): number {
+  const [u, s] = key.split(",");
+  return Number(layout === "split" && s != null ? s : u);
+}
+
+/** Rank of `row` among the sorted visible rows (its on-screen order). */
+function ordinalOf(order: number[], row: number): number {
+  let lo = 0;
+  let hi = order.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (order[mid] < row) lo = mid + 1;
+    else hi = mid;
+  }
+  return lo;
+}
+
+/**
+ * When the target hasn't mounted, re-estimate its position from the rows that
+ * have: take the mounted row nearest it in on-screen order and step from there
+ * by the mounted rows' average height. Corrects estimates thrown off by rows of
+ * uneven height (word wrap), converging as the window moves toward the target.
+ */
+function correctTowards(scroller: HTMLElement, targetOrd: number, order: number[], layout: Layout) {
+  const sr = getShadowRoot();
+  if (!sr) return;
+  const sc = scroller.getBoundingClientRect();
+  let nearest: { ord: number; top: number } | null = null;
+  let total = 0;
+  let count = 0;
+  const seen = new Set<string>();
+  for (const el of sr.querySelectorAll<HTMLElement>("[data-line][data-line-index]")) {
+    const r = el.getBoundingClientRect();
+    if (r.height === 0) continue;
+    const key = el.getAttribute("data-line-index")!;
+    // Split view mounts one row per column; count each row once.
+    if (!seen.has(key)) {
+      seen.add(key);
+      total += r.height;
+      count++;
+    }
+    const ord = ordinalOf(order, mountedRowIndex(key, layout));
+    if (!nearest || Math.abs(ord - targetOrd) < Math.abs(nearest.ord - targetOrd)) {
+      nearest = { ord, top: r.top - sc.top + scroller.scrollTop };
+    }
+  }
+  if (!nearest || count === 0) return;
+  const top = nearest.top + (targetOrd - nearest.ord) * (total / count);
+  scroller.scrollTo({ top: Math.max(0, top - scroller.clientHeight * VIEWPORT_ANCHOR) });
+}
+
 /**
  * Scrolls `match` into view. A coarse jump estimated from the metadata mounts
- * its region in the virtualizer, then a DOM pass snaps onto the real row
- * (retrying for a few frames while the window renders).
+ * its region in the virtualizer, then a DOM pass snaps onto the real row. While
+ * the row is still missing, each frame re-estimates from the rows that did
+ * mount, so uneven row heights can't leave the match off-screen.
  */
 export function scrollToMatch(match: SearchMatch, lines: VisibleLine[], layout: Layout): void {
   const scroller = getDiffScroller();
@@ -187,9 +243,12 @@ export function scrollToMatch(match: SearchMatch, lines: VisibleLine[], layout: 
   const estimatedTop = rows * rowHeight + separators * sepHeight;
   scroller.scrollTo({ top: Math.max(0, estimatedTop - scroller.clientHeight * VIEWPORT_ANCHOR) });
 
-  let tries = 6;
+  const order = [...new Set(lines.map((l) => rowOf(l, layout)))].sort((a, b) => a - b);
+  const targetOrd = ordinalOf(order, rowOf(match.line, layout));
+  let tries = 30;
   const attempt = () => {
     if (refine(scroller, match) || --tries <= 0) return;
+    correctTowards(scroller, targetOrd, order, layout);
     requestAnimationFrame(attempt);
   };
   requestAnimationFrame(attempt);

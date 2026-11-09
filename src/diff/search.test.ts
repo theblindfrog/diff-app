@@ -103,6 +103,14 @@ describe("findMatches", () => {
     expect(findMatches(visible, "foo", true, "unified")).toHaveLength(1);
   });
 
+  it("keeps offsets in the original text when lowercasing changes length", () => {
+    // "İ" lowercases to two code units ("i̇"), shifting everything after it.
+    const [m] = findMatches(plainFileLines("İ foo"), "foo", false, "unified");
+    expect([m.start, m.end]).toEqual([2, 5]);
+    const [i] = findMatches(plainFileLines("aİb"), "i̇b", false, "unified");
+    expect([i.start, i.end]).toEqual([1, 3]);
+  });
+
   it("orders split-view matches left column first within a row", () => {
     const fd = diffOf("a x\n", "b x\n");
     const order = findMatches(visibleDiffLines(fd, new Map()), "x", false, "split").map(
